@@ -69,6 +69,13 @@ class LayerEntity(object):
     def get_data(self):
         return self.data
 
+    def display(self):
+        print("width=", self.get_width(), "height=", self.get_height())
+        for i in range(self.height):
+            for j in range(self.width):
+                print(self.get_data()[i][j], end=' ')
+            print('')
+
 
 def is_empty_tile(tile_value):
     empty_value = -1
@@ -82,4 +89,5 @@ def is_not_empty_tile(tile_value):
 if __name__ == '__main__':
     floor = Floor()
     floor.load_json_layers()
-    print(floor.get_layer())
+    layer = floor.get_layer()
+    layer.display()
