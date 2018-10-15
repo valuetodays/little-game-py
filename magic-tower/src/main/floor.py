@@ -20,7 +20,8 @@ class Floor(object):
             raise RuntimeError("load_json_layers() can be called only once")
             return
 
-        json_file_dir = r'C:\Users\Administrator\Desktop\g-resources'
+        # json_file_dir = r'C:\Users\Administrator\Desktop\g-resources'
+        json_file_dir = r'C:\Users\billu001\Desktop\g'
         if not os.path.exists(json_file_dir):
             raise FileNotFoundError
 
@@ -50,19 +51,25 @@ class Floor(object):
 class LayerEntity(object):
     width = 0
     height = 0
-    data = None
-    
+    layer1 = None
+    layer2 = None
+
     def __init__(self, json_data_all):
         # we only need first layers
-        json_data = json_data_all['layers'][0]
-        self.width = int(json_data['width'])
-        self.height = int(json_data['height'])
-        self.data = [[0 for j in range(self.width)] for i in range(self.height)]
+        self.width = int(json_data_all['width'])
+        self.height = int(json_data_all['height'])
+        json_data_layers = json_data_all['layers']
+        self.layer1 = self.parse_layer(json_data_layers[0])
+        self.layer2 = self.parse_layer(json_data_layers[1])
+
+    def parse_layer(self, json_data):
+        layer_data = [[0 for j in range(self.width)] for i in range(self.height)]
 
         data_list = json_data['data']
         for i in range(self.height):
             for j in range(self.width):
-                self.data[i][j] = data_list[i * self.width + j] - 1
+                layer_data[i][j] = data_list[i * self.width + j] - 1
+        return layer_data
 
     def get_width(self):
         return self.width
@@ -70,14 +77,24 @@ class LayerEntity(object):
     def get_height(self):
         return self.height
 
-    def get_data(self):
-        return self.data
+    def get_layer1(self):
+        return self.layer1
+
+    def get_layer2(self):
+        return self.layer2
 
     def display(self):
         print("width=", self.get_width(), "height=", self.get_height())
+        print("layer1:")
         for i in range(self.height):
             for j in range(self.width):
-                print(self.get_data()[i][j], end=' ')
+                print(self.get_layer1()[i][j], end=' ')
+            print('')
+
+        print("layer2:")
+        for i in range(self.height):
+            for j in range(self.width):
+                print(self.get_layer2()[i][j], end=' ')
             print('')
 
 
