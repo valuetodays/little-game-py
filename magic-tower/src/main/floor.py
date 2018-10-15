@@ -16,6 +16,10 @@ class Floor(object):
         self.layer_number = layer_number
 
     def load_json_layers(self):
+        if len(self.layer_dict) > 0:
+            raise RuntimeError("load_json_layers() can be called only once")
+            return
+
         json_file_dir = r'C:\Users\Administrator\Desktop\g-resources'
         if not os.path.exists(json_file_dir):
             raise FileNotFoundError
