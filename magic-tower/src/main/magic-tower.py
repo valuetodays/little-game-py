@@ -3,12 +3,12 @@
 
 # 1 - Import library
 import pygame, random, sys, time
+import os
 import tkinter
 import tkinter.messagebox
 import floor
 import constant
 import keyutil
-
 
 TILE_WIDTH = constant.TILE_WIDTH
 TILE_HEIGHT = constant.TILE_HEIGHT
@@ -27,7 +27,11 @@ class GameView(object):
         self.screen = pygame.display.set_mode((constant.GAME_WIDTH, constant.GAME_HEIGHT))
 
         # 3 - Load images
-        self.icon0 = pygame.image.load("../resources/images/icon0.png")
+        file_path = os.path.dirname(__file__)
+        print(file_path)
+        parent_path = os.path.dirname(file_path)
+        print(parent_path)
+        self.icon0 = pygame.image.load(os.path.join(parent_path, "resources/images/icon0.png"))
         icon0Width = self.icon0.get_width()
         icon0Height = self.icon0.get_height()
         self.tileNumberPerLine = icon0Width // TILE_WIDTH
@@ -40,28 +44,9 @@ class GameView(object):
         self.floorObj.load_json_layers()
 
     def draw_floor(self):
-        current_layer = self.floorObj.get_layer()
-        # draw layer1
-        for i in range(current_layer.get_height()):
-            for j in range(current_layer.get_width()):
-                floor_value = current_layer.get_layer1()[i][j]
-                if floor.is_not_empty_tile(floor_value):
-                    index_x = floor_value % self.tileNumberPerLine
-                    index_y = floor_value // self.tileNumberPerLine
-                    title_n = self.icon0.subsurface(
-                        (index_x * TILE_WIDTH, index_y * TILE_HEIGHT), (TILE_WIDTH, TILE_HEIGHT))
-                    self.screen.blit(title_n, (j * TILE_HEIGHT, i * TILE_WIDTH))
-        # draw layer2
-        for i in range(current_layer.get_height()):
-            for j in range(current_layer.get_width()):
-                floor_value = current_layer.get_layer2()[i][j]
-                if floor.is_not_empty_tile(floor_value):
-                    index_x = floor_value % self.tileNumberPerLine
-                    index_y = floor_value // self.tileNumberPerLine
-                    title_n = self.icon0.subsurface(
-                        (index_x * TILE_WIDTH, index_y * TILE_HEIGHT), (TILE_WIDTH, TILE_HEIGHT))
-                    self.screen.blit(title_n, (j * TILE_HEIGHT, i * TILE_WIDTH))
-
+        # draw layers
+        self.floorObj.draw_layers(self)
+        
     def draw_hero(self):
         self.screen.blit(self.hero, self.get_hero_pos())
 

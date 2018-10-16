@@ -4,6 +4,10 @@
 # import numpy as np
 import json
 import os
+import constant
+
+TILE_WIDTH = constant.TILE_WIDTH
+TILE_HEIGHT = constant.TILE_HEIGHT
 
 
 class Floor(object):
@@ -20,8 +24,13 @@ class Floor(object):
             raise RuntimeError("load_json_layers() can be called only once")
             return
 
+        file_path = os.path.dirname(__file__)
+        print(file_path)
+        parent_path = os.path.dirname(file_path)
+        print(parent_path)
+        json_file_dir = os.path.join(parent_path, "resources/floor")
         # json_file_dir = r'C:\Users\Administrator\Desktop\g-resources'
-        json_file_dir = r'C:\Users\billu001\Desktop\g'
+        # json_file_dir = r'C:\Users\billu001\Desktop\g'
         if not os.path.exists(json_file_dir):
             raise FileNotFoundError
 
@@ -47,6 +56,25 @@ class Floor(object):
     def change_layer_to(self, floor_layer):
         self.layer_number = floor_layer
 
+    def draw_layer(self, layer_number_to_draw, game_view):
+        current_layer = self.get_layer()
+        for i in range(current_layer.get_height()):
+            for j in range(current_layer.get_width()):
+                floor_value = -1
+                if layer_number_to_draw == 1:
+                    floor_value = current_layer.get_layer1()[i][j]
+                else:
+                    floor_value = current_layer.get_layer2()[i][j]
+                if is_not_empty_tile(floor_value):
+                    index_x = floor_value % game_view.tileNumberPerLine
+                    index_y = floor_value // game_view.tileNumberPerLine
+                    title_n = game_view.icon0.subsurface(
+                        (index_x * TILE_WIDTH, index_y * TILE_HEIGHT), (TILE_WIDTH, TILE_HEIGHT))
+                    game_view.screen.blit(title_n, (j * TILE_HEIGHT, i * TILE_WIDTH))
+
+    def draw_layers(self, game_view):
+        self.draw_layer(1, game_view)
+        self.draw_layer(2, game_view)
 
 class LayerEntity(object):
     width = 0
